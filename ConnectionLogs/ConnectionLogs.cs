@@ -63,9 +63,9 @@ public class ConnectionLogs : BasePlugin
             new DiscordClass().SendMessage(Cfg.Config.DiscordWebhook, true, player, ipAddress);
         }
 
-        if (Cfg.config.SendMessageToTelegram)
+        if (Cfg.Config.SendMessageToTelegram)
         {
-            new TelegramClass(Cfg.config.TelegramBotToken,Cfg.config.TelegramChatId).SendMessage(true, player, ipAddress);
+            new TelegramClass(Cfg.Config.TelegramBotToken,Cfg.Config.TelegramChatId).SendMessage(true, player, ipAddress);
         }
     }
 
@@ -84,9 +84,9 @@ public class ConnectionLogs : BasePlugin
             new DiscordClass().SendMessage(Cfg.Config.DiscordWebhook, false, player);
         }
 
-        if (Cfg.config.SendMessageToTelegram)
+        if (Cfg.Config.SendMessageToTelegram)
         {
-            new TelegramClass(Cfg.config.TelegramBotToken,Cfg.config.TelegramChatId).SendMessage(false, player);
+            new TelegramClass(Cfg.Config.TelegramBotToken,Cfg.Config.TelegramChatId).SendMessage(false, player);
         }
     }
 
