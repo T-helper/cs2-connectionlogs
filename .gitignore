@@ -1,2 +1,2 @@
-ConnectionLogs/obj/
-ConnectionLogs/bin/
+ConnectionLogs/obj/*
+ConnectionLogs/bin/*
