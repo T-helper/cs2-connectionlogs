@@ -7,7 +7,8 @@ namespace ConnectionLogs;
 
 internal class Cfg
 {
-    public static Config config = new();
+    public static Config Config = new();
+
 
     /// <summary>
     /// Checks the configuration file for the module and creates it if it does not exist.
@@ -26,17 +27,17 @@ internal class Cfg
         using (StreamReader sr = new(fs))
         {
             // Deserialize the JSON from the file and load the configuration.
-            config = JsonSerializer.Deserialize<Config>(sr.ReadToEnd());
+            Config = JsonSerializer.Deserialize<Config>(sr.ReadToEnd());
         }
 
-        foreach (PropertyInfo prop in config.GetType().GetProperties())
+        foreach (PropertyInfo prop in Config.GetType().GetProperties())
         {
             if (prop.PropertyType != typeof(string))
             {
-                continue;   
+                continue;
             }
 
-            prop.SetValue(config, ModifyColorValue(prop.GetValue(config).ToString()));
+            prop.SetValue(Config, ModifyColorValue(prop.GetValue(Config).ToString()));
         }
     }
 
@@ -54,7 +55,7 @@ internal class Cfg
 
         Console.WriteLine($"File created: {File.Exists(path)}");
 
-        config = new Config
+        Config = new Config
         {
             ChatPrefix = "[ConnectionLogs]",
             SendMessageToDiscord = false,
@@ -71,7 +72,7 @@ internal class Cfg
         };
 
         // Serialize the config object to JSON and write it to the file.
-        string jsonConfig = JsonSerializer.Serialize(config, new JsonSerializerOptions()
+        string jsonConfig = JsonSerializer.Serialize(Config, new JsonSerializerOptions()
         {
             WriteIndented = true
         });
@@ -87,6 +88,7 @@ internal class Cfg
         }
 
         string modifiedValue = msg;
+
         foreach (FieldInfo field in typeof(ChatColors).GetFields())
         {
             string pattern = $"{{{field.Name}}}";
@@ -96,7 +98,6 @@ internal class Cfg
             }
         }
         return modifiedValue;
-        
     }
 }
 
@@ -110,7 +111,7 @@ internal class Config
     public string? DiscordWebhook { get; set; }
     public bool StoreInDatabase { get; set; }
     public string? DatabaseHost { get; set; }
-    public uint DatabasePort { get; set; }
+    public int DatabasePort { get; set; }
     public string? DatabaseUser { get; set; }
     public string? DatabasePassword { get; set; }
     public string? DatabaseName { get; set; }

@@ -14,13 +14,15 @@ internal class DiscordClass
     private string DiscordContent(bool connectType, CCSPlayerController player, string ipAddress)
     {
         string connectTypeString = connectType ? "connected" : "disconnected";
-        // Get the current timestamp as a unix timestamp
-        if (ipAddress == null)
+
+        string message = $"<t:{DateTimeOffset.Now.ToUnixTimeSeconds()}:T> [{player.PlayerName}](<https://steamcommunity.com/profiles/{player.SteamID}>) `{player.SteamID}` {connectTypeString}";
+        
+        if (ipAddress != null)
         {
-            return $"<t:{DateTimeOffset.Now.ToUnixTimeSeconds()}:T> [{player.PlayerName}](<https://steamcommunity.com/profiles/{player.SteamID}>) `{player.SteamID}` {connectTypeString}";
+            message += $" <`{ipAddress}`>";
         }
 
-        return $"<t:{DateTimeOffset.Now.ToUnixTimeSeconds()}:T> [{player.PlayerName}](<https://steamcommunity.com/profiles/{player.SteamID}>) `{player.SteamID}` {connectTypeString} with ip `{ipAddress}`";
+        return message;
     }
 
     /// <summary>
@@ -47,7 +49,7 @@ internal class DiscordClass
         catch (Exception ex)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Failed to send message to discord.\n{ex.Message}");
+            Console.WriteLine(ex);
             Console.ResetColor();
         }
     }
