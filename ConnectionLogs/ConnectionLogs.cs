@@ -50,6 +50,11 @@ public class ConnectionLogs : BasePlugin
         {
             new DiscordClass().SendMessage(Cfg.config.DiscordWebhook, true, player, ipAddress);
         }
+
+        if (Cfg.config.SendMessageToTelegram)
+        {
+            new TelegramClass(Cfg.config.TelegramBotToken,Cfg.config.TelegramChatId).SendMessage(true, player, ipAddress);
+        }
     }
 
     public void Listener_OnClientDisconnectHandler(int playerSlot)
@@ -64,6 +69,11 @@ public class ConnectionLogs : BasePlugin
         if (Cfg.config.SendMessageToDiscord)
         {
             new DiscordClass().SendMessage(Cfg.config.DiscordWebhook, false, player);
+        }
+
+        if (Cfg.config.SendMessageToTelegram)
+        {
+            new TelegramClass(Cfg.config.TelegramBotToken,Cfg.config.TelegramChatId).SendMessage(false, player);
         }
     }
 
