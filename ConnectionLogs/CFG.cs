@@ -59,6 +59,7 @@ internal class Cfg
         {
             ChatPrefix = "[ConnectionLogs]",
             SendMessageToDiscord = false,
+            PrintIpToDiscord = true,
             SendMessageToTelegram = false,
             TelegramBotToken = "bot-TOKEN",
             TelegramChatId = "12345678",
@@ -84,7 +85,7 @@ internal class Cfg
     {
         if (!msg.Contains('{'))
         {
-            return string.IsNullOrEmpty(msg) ? "[ConnectionLog]" : msg;
+            return string.IsNullOrEmpty(msg) ? "[ConnectionLogs]" : msg;
         }
 
         string modifiedValue = msg;
@@ -105,6 +106,7 @@ internal class Config
 {
     public string? ChatPrefix { get; set; }
     public bool SendMessageToDiscord { get; set; }
+    public bool PrintIpToDiscord { get; set; }
     public bool SendMessageToTelegram { get; set; }
     public string? TelegramBotToken { get; set; }
     public string? TelegramChatId { get; set; }

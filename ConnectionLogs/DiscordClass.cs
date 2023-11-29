@@ -1,5 +1,6 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using System.Text;
 
 namespace ConnectionLogs;
 
@@ -15,15 +16,22 @@ internal class DiscordClass
     {
         string connectTypeString = connectType ? "connected" : "disconnected";
 
-        string message = $"<t:{DateTimeOffset.Now.ToUnixTimeSeconds()}:T> [{player.PlayerName}](<https://steamcommunity.com/profiles/{player.SteamID}>) `{player.SteamID}` {connectTypeString}";
-        
-        if (ipAddress != null)
+        StringBuilder messageBuilder = new StringBuilder();
+        messageBuilder.Append($"<t:{DateTimeOffset.Now.ToUnixTimeSeconds()}:T> [{player.PlayerName}](<https://steamcommunity.com/profiles/{player.SteamID}>) `{player.SteamID}` {connectTypeString}");
+
+        if (!Cfg.Config.PrintIpToDiscord)
         {
-            message += $" <`{ipAddress}`>";
+            return messageBuilder.ToString();
         }
 
-        return message;
+        if (!string.IsNullOrEmpty(ipAddress))
+        {
+            messageBuilder.Append($" [{ipAddress}](<https://geoiplookup.net/ip/{ipAddress}>)");
+        }
+
+        return messageBuilder.ToString();
     }
+
 
     /// <summary>
     /// Sends a message to a Discord webhook with information about a player's connection status.
@@ -31,26 +39,30 @@ internal class DiscordClass
     /// <param name="webhook">The Discord webhook URL to send the message to.</param>
     /// <param name="connectType">A boolean indicating whether the player is connecting or disconnecting.</param>
     /// <param name="player">The CCSPlayerController object representing the player.</param>
-    /// <returns>A Task representing the asynchronous operation.</returns>
-    public async Task SendMessage(string webhook, bool connectType, CCSPlayerController player, string ipAddress = null)
+    public void SendMessage(bool connectType, CCSPlayerController player, string ipAddress = null)
     {
         try
         {
             string msg = DiscordContent(connectType, player, ipAddress);
-            using HttpClient client = new();
-            FormUrlEncodedContent content = new FormUrlEncodedContent(new[]
+            Task.Run(() =>
             {
-                new KeyValuePair<string, string>("content", msg)
-            });
+                using (HttpClient? client = new())
+                using (StringContent? content = new($"{{\"content\":\"{msg}\"}}", Encoding.UTF8, "application/json"))
+                {
+                    HttpResponseMessage resp = client.PostAsync(Cfg.Config.DiscordWebhook, content).Result;
 
-            // Discard
-            await client.PostAsync(webhook, content);
+                    if (!resp.IsSuccessStatusCode)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"[{DateTime.Now}] Failed to send message to Discord: {resp.StatusCode}");
+                        Console.ResetColor();
+                    }
+                }
+            });
         }
         catch (Exception ex)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(ex);
-            Console.ResetColor();
         }
     }
 }
