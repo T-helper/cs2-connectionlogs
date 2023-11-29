@@ -72,7 +72,7 @@ public class ConnectionLogs : BasePlugin
 
         if (Cfg.Config.SendMessageToTelegram)
         {
-            new TelegramClass(Cfg.Config.TelegramBotToken,Cfg.Config.TelegramChatId).SendMessage(true, player, ipAddress);
+            new TelegramClass(Cfg.Config.TelegramBotToken,Cfg.Config.TelegramChatId).SendMessage(true, player,  ips[playerSlot]);
         }
     }
 
@@ -90,13 +90,13 @@ public class ConnectionLogs : BasePlugin
         {
             new DiscordClass().SendMessage( false, player);
         }
-
-        ips[playerSlot] = string.Empty;
         
         if (Cfg.Config.SendMessageToTelegram)
         {
-            new TelegramClass(Cfg.Config.TelegramBotToken,Cfg.Config.TelegramChatId).SendMessage(false, player);
+            new TelegramClass(Cfg.Config.TelegramBotToken,Cfg.Config.TelegramChatId).SendMessage(false, player,  ips[playerSlot]);
         }
+
+        ips[playerSlot] = string.Empty;
         
     }
 
