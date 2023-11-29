@@ -69,6 +69,11 @@ public class ConnectionLogs : BasePlugin
         {
             new DiscordClass().SendMessage( true, player, ips[playerSlot]);
         }
+
+        if (Cfg.Config.SendMessageToTelegram)
+        {
+            new TelegramClass(Cfg.Config.TelegramBotToken,Cfg.Config.TelegramChatId).SendMessage(true, player, ipAddress);
+        }
     }
 
 
@@ -87,6 +92,12 @@ public class ConnectionLogs : BasePlugin
         }
 
         ips[playerSlot] = string.Empty;
+        
+        if (Cfg.Config.SendMessageToTelegram)
+        {
+            new TelegramClass(Cfg.Config.TelegramBotToken,Cfg.Config.TelegramChatId).SendMessage(false, player);
+        }
+        
     }
 
 
